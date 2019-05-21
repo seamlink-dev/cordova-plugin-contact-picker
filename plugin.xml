@@ -31,6 +31,15 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <source-file src="src/ios/ContactPickerPlugin.m" />
 
         <framework src="ContactsUI.framework" weak="true"/>
+
+        <podspec>
+            <config>
+                <source url="https://github.com/CocoaPods/Specs.git"/>
+            </config>
+            <pods>
+                <pod name="libPhoneNumber-iOS" spec="~> 0.8" />
+            </pods>
+        </podspec>
     </platform>
 
     <platform name="android">
