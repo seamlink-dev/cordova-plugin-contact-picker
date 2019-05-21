@@ -24,6 +24,9 @@
     [self.getTopPresentedViewController presentViewController:_contactPickerController animated:YES completion:nil];
 
     self.contactCallbackId = command.callbackId;
+
+    NSDictionary* settings = [command.arguments objectAtIndex:0];
+    self.lastCountry = settings[@"country"];
 }
 
 - (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(nonnull CNContact *)contact {
@@ -40,7 +43,7 @@
         NSString* phoneNumberString = [phoneNumber valueForKey:@"digits"];
 
         NSError *err = nil;
-        NBPhoneNumber *myNumber = [_phoneUtil parse:phoneNumberString defaultRegion:@"BY" error:&err];
+        NBPhoneNumber *myNumber = [_phoneUtil parse:phoneNumberString defaultRegion:self.lastCountry error:&err];
         if (!err) {
             NSString *phoneNumberNormalized = [_phoneUtil format:myNumber
                                                     numberFormat:NBEPhoneNumberFormatE164 error:&err];

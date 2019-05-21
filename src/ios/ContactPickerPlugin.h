@@ -6,5 +6,6 @@
 - (void)requestContact:(CDVInvokedUrlCommand*)command;
 
 @property (nonatomic, copy) NSString *contactCallbackId;
+@property (nonatomic, copy) NSString *lastCountry;
 
 @end
