@@ -1,0 +1,47 @@
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android"
+           id="cordova-plugin-contact-picker"
+      version="0.1.0">
+
+    <name>ContactPickerPlugin</name>
+    <description>Access to system contact picker dialog</description>
+    <license>MIT</license>
+    <keywords>cordova</keywords>
+    <repo>https://github.com/chemerisuk/cordova-plugin-contact-picker</repo>
+    <issue>https://github.com/chemerisuk/cordova-plugin-contact-picker/issues</issue>
+
+    <js-module src="www/ContactPicker.js" name="ContactPicker">
+        <merges target="cordova.plugins.ContactPicker" />
+    </js-module>
+
+    <engines>
+        <engine name="cordova" version=">=7.1.0"/>
+        <engine name="cordova-android" version=">=7.0.0"/>
+        <engine name="cordova-ios" version=">=5.0.0"/>
+    </engines>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="ContactPicker">
+                <param name="ios-package" value="ContactPickerPlugin" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/ContactPickerPlugin.h" />
+        <source-file src="src/ios/ContactPickerPlugin.m" />
+    </platform>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="ContactPicker">
+                <param name="android-package" value="by.chemerisuk.cordova.ContactPickerPlugin" />
+            </feature>
+        </config-file>
+
+        <dependency id="cordova-support-android-plugin" version="~1.0.0"/>
+
+        <source-file src="src/android/ContactPickerPlugin.java"
+            target-dir="src/by/chemerisuk/cordova/" />
+    </platform>
+
+</plugin>

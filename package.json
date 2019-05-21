@@ -1,0 +1,33 @@
+{
+  "name": "cordova-plugin-contact-picker",
+  "version": "0.1.0",
+  "description": "Access to system contact picker dialog",
+  "cordova": {
+    "id": "cordova-plugin-contact-picker",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chemerisuk/cordova-plugin-contact-picker.git"
+  },
+  "author": "Maksim Chemerisuk <chemerisuk@gmail.com> (https://github.com/chemerisuk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chemerisuk/cordova-plugin-contact-picker/issues"
+  },
+  "homepage": "https://github.com/chemerisuk/cordova-plugin-contact-picker#readme",
+  "keywords": [
+    "cordova",
+    "contacts",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "scripts": {
+    "version": "replace -s 'version=\"(.+)(?=\">)' 'version=\"'$npm_package_version plugin.xml && git add plugin.xml",
+    "postversion": "git push && git push --tags"
+  }
+}
