@@ -29,6 +29,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <header-file src="src/ios/ContactPickerPlugin.h" />
         <source-file src="src/ios/ContactPickerPlugin.m" />
+
+        <framework src="ContactsUI.framework" weak="true"/>
     </platform>
 
     <platform name="android">

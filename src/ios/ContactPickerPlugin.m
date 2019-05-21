@@ -2,7 +2,7 @@
 
 @implementation ContactPickerPlugin
 
-- (void)open:(CDVInvokedUrlCommand *)command {
+- (void)requestContact:(CDVInvokedUrlCommand *)command {
     NSDictionary* settings = [command.arguments objectAtIndex:0];
 
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];

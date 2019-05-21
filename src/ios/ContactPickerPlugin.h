@@ -2,6 +2,6 @@
 
 @interface ContactPickerPlugin : CDVPlugin
 
-- (void)open:(CDVInvokedUrlCommand*)command;
+- (void)requestContact:(CDVInvokedUrlCommand*)command;
 
 @end
