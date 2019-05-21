@@ -10,7 +10,9 @@
 - (void)pluginInitialize {
     _phoneUtil = [[NBPhoneNumberUtil alloc] init];
     _contactFormatter = [[CNContactFormatter alloc] init];
+
     _contactPickerController = [[CNContactPickerViewController alloc] init];
+    _contactPickerController.displayedPropertyKeys = @[CNContactPhoneNumbersKey];
     _contactPickerController.predicateForSelectionOfContact = [NSPredicate predicateWithFormat:@"phoneNumbers.@count >= 1"];
     _contactPickerController.delegate = self;
 }
@@ -20,40 +22,32 @@
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
                                                     messageAsString:@"Only single contact request is allowed"];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-        return;
+    } else {
+        [self.getTopPresentedViewController presentViewController:_contactPickerController animated:YES completion:nil];
+
+        self.contactCallbackId = command.callbackId;
+
+        NSDictionary* settings = [command.arguments objectAtIndex:0];
+        self.lastCountry = settings[@"country"];
     }
-
-    [self.getTopPresentedViewController presentViewController:_contactPickerController animated:YES completion:nil];
-
-    self.contactCallbackId = command.callbackId;
-
-    NSDictionary* settings = [command.arguments objectAtIndex:0];
-    self.lastCountry = settings[@"country"];
 }
 
-- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(nonnull CNContact *)contact {
-    NSString* displayName = [_contactFormatter stringFromContact:contact];
-
-    NSMutableArray *phoneNumbers = [[NSMutableArray alloc] init];
-    for (int j = 0, k = (int)[contact.phoneNumbers count]; j < k; ++j) {
-        CNPhoneNumber *phoneNumber = [[contact.phoneNumbers objectAtIndex:j] valueForKey:@"value"];
-        NSString* phoneNumberString = [phoneNumber valueForKey:@"digits"];
-
-        NSError *err = nil;
-        NBPhoneNumber *myNumber = [_phoneUtil parse:phoneNumberString defaultRegion:self.lastCountry error:&err];
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContactProperty:(nonnull CNContactProperty *)contactProperty {
+    NSString* displayName = [_contactFormatter stringFromContact:contactProperty.contact];
+    NSString* phoneNumberString = [contactProperty.value valueForKey:@"digits"];
+    NSError *err = nil;
+    NBPhoneNumber *parsedNumber = [_phoneUtil parse:phoneNumberString
+                                      defaultRegion:self.lastCountry error:&err];
+    if (!err) {
+        NSString *phoneNumberNormalized = [_phoneUtil format:parsedNumber
+                                                numberFormat:NBEPhoneNumberFormatE164 error:&err];
         if (!err) {
-            NSString *phoneNumberNormalized = [_phoneUtil format:myNumber
-                                                    numberFormat:NBEPhoneNumberFormatE164 error:&err];
-            if (!err) {
-                phoneNumberString = phoneNumberNormalized;
-            }
+            phoneNumberString = phoneNumberNormalized;
         }
-
-        [phoneNumbers addObject:phoneNumberString];
     }
 
     if (self.contactCallbackId) {
-        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"displayName": displayName, @"phoneNumbers": phoneNumbers}];
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"displayName": displayName, @"phoneNumber": phoneNumberString}];
         [self.commandDelegate sendPluginResult:result callbackId:self.contactCallbackId];
         self.contactCallbackId = nil;
     }

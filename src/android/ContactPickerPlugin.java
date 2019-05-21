@@ -52,7 +52,7 @@ public class ContactPickerPlugin extends ReflectiveCordovaPlugin {
                     JSONObject result = new JSONObject();
                     try {
                         result.put("displayName", cursor.getString(nameIndex));
-                        result.put("phoneNumbers", new JSONArray().put(cursor.getString(numberIndex)));
+                        result.put("phoneNumber", cursor.getString(numberIndex));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
