@@ -2,13 +2,15 @@
 #import "libPhoneNumber-iOS/NBPhoneNumberUtil.h"
 
 @implementation ContactPickerPlugin {
-    CNContactPickerViewController *_contactPickerController;
-    NBPhoneNumberUtil *_phoneUtil;
+    CNContactPickerViewController* _contactPickerController;
+    CNContactFormatter* _contactFormatter;
+    NBPhoneNumberUtil* _phoneUtil;
 }
 
 - (void)pluginInitialize {
     _phoneUtil = [[NBPhoneNumberUtil alloc] init];
-    _contactPickerController = [[CNContactPickerViewController alloc]init];
+    _contactFormatter = [[CNContactFormatter alloc] init];
+    _contactPickerController = [[CNContactPickerViewController alloc] init];
     _contactPickerController.predicateForSelectionOfContact = [NSPredicate predicateWithFormat:@"phoneNumbers.@count >= 1"];
     _contactPickerController.delegate = self;
 }
@@ -30,12 +32,7 @@
 }
 
 - (void)contactPicker:(CNContactPickerViewController *)picker didSelectContact:(nonnull CNContact *)contact {
-    NSString* displayName = contact.givenName;
-    NSString* lastName = contact.familyName;
-    if (lastName) {
-        displayName = [NSString stringWithFormat:@"%@ %@", displayName, lastName];
-        displayName = [displayName stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    }
+    NSString* displayName = [_contactFormatter stringFromContact:contact];
 
     NSMutableArray *phoneNumbers = [[NSMutableArray alloc] init];
     for (int j = 0, k = (int)[contact.phoneNumbers count]; j < k; ++j) {
