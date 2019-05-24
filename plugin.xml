@@ -21,6 +21,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </engines>
 
     <platform name="ios">
+        <preference name="LIB_PHONE_NUMBER_VERSION" default="~> 0.8"/>
+
         <config-file target="config.xml" parent="/*">
             <feature name="ContactPicker">
                 <param name="ios-package" value="ContactPickerPlugin" />
@@ -37,7 +39,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <source url="https://github.com/CocoaPods/Specs.git"/>
             </config>
             <pods>
-                <pod name="libPhoneNumber-iOS" spec="~> 0.8" />
+                <pod name="libPhoneNumber-iOS" spec="$LIB_PHONE_NUMBER_VERSION" />
             </pods>
         </podspec>
     </platform>
