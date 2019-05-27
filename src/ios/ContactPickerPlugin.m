@@ -46,13 +46,13 @@
 }
 
 - (void)contactPickerDidCancel:(CNContactPickerViewController *)picker {
-    [_contactPickerController dismissViewControllerAnimated:YES completion:nil];
     if (self.contactCallbackId) {
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
         [self.commandDelegate sendPluginResult:result callbackId:self.contactCallbackId];
         self.contactCallbackId = nil;
-        _contactPickerController = nil;
     }
+
+    _contactPickerController = nil;
 }
 
 -(NSString *)getNormalizedPhoneNumber:(NSString*) phoneNumberString {
