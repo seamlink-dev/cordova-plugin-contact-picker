@@ -3,13 +3,6 @@
 
 @implementation ContactPickerPlugin {
     CNContactPickerViewController* _contactPickerController;
-    CNContactFormatter* _contactFormatter;
-    NBPhoneNumberUtil* _phoneUtil;
-}
-
-- (void)pluginInitialize {
-    _phoneUtil = [[NBPhoneNumberUtil alloc] init];
-    _contactFormatter = [[CNContactFormatter alloc] init];
 }
 
 - (void)requestContact:(CDVInvokedUrlCommand *)command {
@@ -34,7 +27,7 @@
 
 - (void)contactPicker:(CNContactPickerViewController *)picker didSelectContactProperty:(nonnull CNContactProperty *)contactProperty {
     if (self.contactCallbackId) {
-        NSString* displayName = [_contactFormatter stringFromContact:contactProperty.contact];
+        NSString* displayName = [CNContactFormatter stringFromContact:contactProperty.contact style:CNContactFormatterStyleFullName];
         NSString* phoneNumber = [contactProperty.value valueForKey:@"digits"];
         phoneNumber = [self getNormalizedPhoneNumber:phoneNumber];
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"displayName": displayName, @"phoneNumber": phoneNumber}];
@@ -46,22 +39,23 @@
 }
 
 - (void)contactPickerDidCancel:(CNContactPickerViewController *)picker {
+    [_contactPickerController dismissViewControllerAnimated:YES completion:nil];
     if (self.contactCallbackId) {
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
         [self.commandDelegate sendPluginResult:result callbackId:self.contactCallbackId];
         self.contactCallbackId = nil;
+        _contactPickerController = nil;
     }
-
-    _contactPickerController = nil;
 }
 
 -(NSString *)getNormalizedPhoneNumber:(NSString*) phoneNumberString {
     NSError *err = nil;
-    NBPhoneNumber *parsedNumber = [_phoneUtil parse:phoneNumberString
-                                      defaultRegion:self.lastCountry error:&err];
+    NBPhoneNumberUtil* phoneUtil = [[NBPhoneNumberUtil alloc] init];
+    NBPhoneNumber *parsedNumber = [phoneUtil parse:phoneNumberString
+                                     defaultRegion:@"BY" error:&err];
     if (!err) {
-        NSString *phoneNumberNormalized = [_phoneUtil format:parsedNumber
-                                                numberFormat:NBEPhoneNumberFormatE164 error:&err];
+        NSString *phoneNumberNormalized = [phoneUtil format:parsedNumber
+                                               numberFormat:NBEPhoneNumberFormatE164 error:&err];
         if (!err) {
             phoneNumberString = phoneNumberNormalized;
         }
