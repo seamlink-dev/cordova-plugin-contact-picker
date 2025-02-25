@@ -1,5 +1,4 @@
 #import "ContactPickerPlugin.h"
-#import "libPhoneNumber-iOS/NBPhoneNumberUtil.h"
 
 @implementation ContactPickerPlugin {
     CNContactPickerViewController* _contactPickerController;
@@ -29,7 +28,6 @@
     if (self.contactCallbackId) {
         NSString* displayName = [CNContactFormatter stringFromContact:contactProperty.contact style:CNContactFormatterStyleFullName];
         NSString* phoneNumber = [contactProperty.value valueForKey:@"digits"];
-        phoneNumber = [self getNormalizedPhoneNumber:phoneNumber];
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"displayName": displayName, @"phoneNumber": phoneNumber}];
         [self.commandDelegate sendPluginResult:result callbackId:self.contactCallbackId];
         self.contactCallbackId = nil;
@@ -46,22 +44,6 @@
         self.contactCallbackId = nil;
         _contactPickerController = nil;
     }
-}
-
--(NSString *)getNormalizedPhoneNumber:(NSString*) phoneNumberString {
-    NSError *err = nil;
-    NBPhoneNumberUtil* phoneUtil = [[NBPhoneNumberUtil alloc] init];
-    NBPhoneNumber *parsedNumber = [phoneUtil parse:phoneNumberString
-                                     defaultRegion:@"BY" error:&err];
-    if (!err) {
-        NSString *phoneNumberNormalized = [phoneUtil format:parsedNumber
-                                               numberFormat:NBEPhoneNumberFormatE164 error:&err];
-        if (!err) {
-            phoneNumberString = phoneNumberNormalized;
-        }
-    }
-
-    return phoneNumberString;
 }
 
 -(UIViewController *)getTopPresentedViewController {
