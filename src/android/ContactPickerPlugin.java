@@ -1,5 +1,6 @@
 package by.chemerisuk.cordova;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds;
