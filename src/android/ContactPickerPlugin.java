@@ -8,6 +8,7 @@ import by.chemerisuk.cordova.support.CordovaMethod;
 import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +32,7 @@ public class ContactPickerPlugin extends ReflectiveCordovaPlugin {
     private CallbackContext contactCallback;
 
     @CordovaMethod
-    private void requestContact(JSONObject settings, CallbackContext callbackContext) {
+    private void requestContact(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         if (this.contactCallback != null) {
             callbackContext.error("Only single contact request is allowed");
         } else {
@@ -44,9 +45,9 @@ public class ContactPickerPlugin extends ReflectiveCordovaPlugin {
     }
 
     @Override
-    private void requestContact(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == SELECT_CONTACT && this.contactCallback != null) {
-            if (resultCode != RESULT_OK) {
+             if (resultCode != Activity.RESULT_OK) {
                 this.contactCallback.sendPluginResult(
                     new PluginResult(PluginResult.Status.OK, (String)null)
                 );
