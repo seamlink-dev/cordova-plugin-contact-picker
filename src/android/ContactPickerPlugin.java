@@ -39,12 +39,12 @@ public class ContactPickerPlugin extends ReflectiveCordovaPlugin {
 
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType(CommonDataKinds.Phone.CONTENT_TYPE);
-            cordova.startActivityForResult(this, intent, SELECT_CONTACT);
+            cordova.startActivityForResult(this, Intent.createChooser(intent, "Select contact"), SELECT_CONTACT);
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    private void requestContact(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         if (requestCode == SELECT_CONTACT && this.contactCallback != null) {
             if (resultCode != RESULT_OK) {
                 this.contactCallback.sendPluginResult(
